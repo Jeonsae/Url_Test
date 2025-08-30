@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캐릭터 목록</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            margin-top: 2rem;
+            cursor: grab;
+            user-select: none;
+        }
+        
+        .slider-container.grabbing {
+            cursor: grabbing;
+        }
+
+        .character-card {
+            position: absolute;
+            width: 250px;
+            height: 350px;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: transform 0.5s, z-index 0.5s, opacity 0.5s, filter 0.5s;
+            border: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .character-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+            border: none;
+            pointer-events: none;
+        }
+        
+        .back-button {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            margin-top: 2rem;
+        }
+
+        .back-button:hover {
+            background-color: white;
+            color: #2575fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-4xl font-bold mb-4">
+            <span id="typeTitle"></span> 유형 캐릭터
+        </h1>
+        
+        <h3>옆으로 드래그 해보세요!</h3>
+        <div id="sliderContainer" class="slider-container">
+            </div>
+        
+        <button id="backButton" class="back-button">뒤로가기</button>
+    </div>
+
+    <script>
+        const characterData = {
+            '용맹': ['19.png', '25.png', '07.png', '13.png', '01.png'],
+            '고귀': ['24.png', '30.png', '18.png', '12.png', '06.png'],
+            '교활': ['26.png', '20.png', '08.png', '02.png', '14.png'],
+            '인내': ['27.png', '09.png', '21.png', '03.png', '15.png'],
+            '흉폭': ['23.png', '05.png', '11.png', '17.png', '29.png'],
+            '포용': ['22.png', '10.png', '04.png', '16.png', '28.png']
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get('type');
+        const sliderContainer = document.getElementById('sliderContainer');
+        const typeTitle = document.getElementById('typeTitle');
+
+        if (type && characterData[type]) {
+            typeTitle.textContent = type;
+            const characters = characterData[type];
+
+            // 모든 캐릭터 카드를 동적으로 생성
+            characters.forEach(filename => {
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                
+                const img = document.createElement('img');
+                img.src = filename;
+                img.alt = filename.split('.')[0];
+                img.className = 'character-img';
+
+                card.appendChild(img);
+                sliderContainer.appendChild(card);
+            });
+
+            // 슬라이드 로직
+            let items = document.querySelectorAll('.slider-container .character-card');
+            let active = Math.floor(items.length / 2);
+
+            function loadShow() {
+                let stt = 0;
+                const itemWidth = items[0].offsetWidth;
+                const translationFactor = itemWidth * 1.2;
+
+                items.forEach(item => {
+                    item.style.transform = 'none';
+                    item.style.zIndex = '';
+                    item.style.filter = '';
+                    item.style.opacity = '';
+                });
+
+                items[active].style.transform = `translate(-50%, -50%)`;
+                items[active].style.zIndex = 10;
+                items[active].style.filter = 'none';
+                items[active].style.opacity = 1;
+
+                for (let i = active + 1; i < items.length; i++) {
+                    stt++;
+                    items[i].style.transform = `translate(-50%, -50%) translateX(${translationFactor * stt}px) scale(${1 - 0.2 * stt}) perspective(16px) rotateY(-1deg)`;
+                    items[i].style.zIndex = -stt;
+                    items[i].style.filter = 'blur(5px)';
+                    items[i].style.opacity = stt > 2 ? 0 : 0.6;
+                }
+
+                stt = 0;
+                for (let i = active - 1; i >= 0; i--) {
+                    stt++;
+                    items[i].style.transform = `translate(-50%, -50%) translateX(${-translationFactor * stt}px) scale(${1 - 0.2 * stt}) perspective(16px) rotateY(1deg)`;
+                    items[i].style.zIndex = -stt;
+                    items[i].style.filter = 'blur(5px)';
+                    items[i].style.opacity = stt > 2 ? 0 : 0.6;
+                }
+            }
+
+            loadShow();
+
+            // 마우스/터치 스와이프 로직
+            let startX = 0;
+            let endX = 0;
+            let isDragging = false;
+            
+            sliderContainer.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isDragging = true;
+                sliderContainer.classList.add('grabbing');
+                startX = e.clientX;
+            });
+
+            document.addEventListener('mouseup', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                sliderContainer.classList.remove('grabbing');
+                endX = e.clientX;
+                handleGesture();
+            });
+
+            sliderContainer.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                sliderContainer.classList.add('grabbing');
+                startX = e.touches[0].clientX;
+            });
+
+            document.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                sliderContainer.classList.remove('grabbing');
+                endX = e.changedTouches[0].clientX;
+                handleGesture();
+            });
+
+            sliderContainer.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            function handleGesture() {
+                let diff = startX - endX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        // 왼쪽으로 스와이프
+                        let firstItem = items[0];
+                        sliderContainer.appendChild(firstItem);
+                    } else {
+                        // 오른쪽으로 스와이프
+                        let lastItem = items[items.length - 1];
+                        sliderContainer.prepend(lastItem);
+                    }
+                    items = document.querySelectorAll('.slider-container .character-card');
+                    loadShow();
+                }
+            }
+        } else {
+            typeTitle.textContent = '유형을 찾을 수 없습니다';
+        }
+
+        document.getElementById('backButton').addEventListener('click', () => {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
