@@ -31,8 +31,8 @@
         .slider-container {
             position: relative;
             width: 100%;
-            height: 55vh; 
-            max-height: 450px; 
+            height: 62vh; 
+            max-height: 500px; 
             overflow: hidden;
             margin-top: 2rem;
             cursor: grab;
@@ -46,18 +46,21 @@
         .character-card {
             position: absolute;
             width: 65vw; 
-            height: 85%; 
+            height: 80%; /* 수직 여백 확보 */
             max-width: 250px; 
-            max-height: 350px; 
+            max-height: 380px; 
             
-            border-radius: 12px;
-            padding: 1rem;
+            /* ❌ PNG 이미지에 둥근 모서리가 있으므로 제거 */
+            border-radius: 0; 
+            /* ❌ 이미지가 카드 전체를 덮도록 패딩 제거 */
+            padding: 0; 
+            
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             
-            /* ⚠️ iOS 렌더링 문제 해결을 위한 수정 */
+            /* 💡 iOS 렌더링 문제 해결 및 블러 효과는 유지 */
             overflow: hidden; 
             -webkit-mask-image: -webkit-radial-gradient(white, black); 
             
@@ -71,12 +74,13 @@
 
         .character-img {
             width: 100%;
-            height: auto;
-            border-radius: 8px;
-            object-fit: cover;
+            height: 100%;
+            /* ❌ PNG 이미지에 둥근 모서리가 있으므로 제거 */
+            border-radius: 0; 
+            /* 💡 이미지가 카드를 꽉 채우도록 설정 */
+            object-fit: contain; /* 또는 fill */
             border: none;
             pointer-events: none;
-            /* ✅ 이미지 자체에도 클리핑 적용 */
             overflow: hidden;
         }
         
@@ -106,7 +110,7 @@
         
         <h3>옆으로 드래그 해보세요!</h3>
         <div id="sliderContainer" class="slider-container">
-            </div>
+        </div>
         
         <button id="backButton" class="back-button">뒤로가기</button>
     </div>
@@ -229,11 +233,9 @@
                 let diff = startX - endX;
                 if (Math.abs(diff) > 50) {
                     if (diff > 0) {
-                        // 왼쪽으로 스와이프
                         let firstItem = items[0];
                         sliderContainer.appendChild(firstItem);
                     } else {
-                        // 오른쪽으로 스와이프
                         let lastItem = items[items.length - 1];
                         sliderContainer.prepend(lastItem);
                     }

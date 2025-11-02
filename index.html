@@ -41,12 +41,12 @@
             transition: all 0.3s ease;
         }
 
-        /* ✅ 1. 우상단 고정 버튼 스타일 추가 */
+        /* ✅ 1. 우상단 고정 버튼 스타일 */
         #fullscreen-link-button {
-            position: fixed; /* 뷰포트에 고정 */
-            top: 20px;       /* 상단 여백 */
-            right: 20px;     /* 오른쪽 여백 */
-            width: 120px;    /* 버튼 크기 조정 */
+            position: fixed; 
+            top: 20px;      
+            right: 20px;    
+            width: 120px;   
             height: 40px;
             background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
             color: var(--button-text-color);
@@ -55,10 +55,10 @@
             font-size: 0.8em;
             font-weight: 700;
             cursor: pointer;
-            z-index: 1000;   /* 다른 요소 위에 표시 */
+            z-index: 1000;  
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s;
-            text-decoration: none; /* <a> 태그 스타일링 */
+            text-decoration: none; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -186,6 +186,11 @@
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
+            }
+
+            /* 💡 수정: 모바일 뷰포트에서는 '전체 화면 이미지 보기' 버튼 숨기기 */
+            #fullscreen-link-button {
+                display: none; 
             }
 
             .button {
@@ -350,7 +355,6 @@
             mbtiTypeEl.textContent = `${category} 유형입니다.`;
 
             const resultButton = resultPage.querySelector('button');
-            // ✅ 기존 기능 유지: 버튼 텍스트와 onclick 함수를 'characters.html'로 연결
             resultButton.textContent = `${category} 유형의 캐릭터 보러가기`;
             resultButton.onclick = goToCharacterPage; 
         }
@@ -358,7 +362,7 @@
         function goToCharacterPage() {
              const mbti = determineMbtiType();
              const category = mbtiCategories[mbti] || '알 수 없음';
-             // ✅ 기존 기능 유지: 'characters.html'로 이동
+             // 'characters.html'로 이동
              window.location.href = `characters.html?type=${encodeURIComponent(category)}`; 
         }
 
