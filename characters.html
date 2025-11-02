@@ -15,10 +15,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* ✅ 수정: 상단 정렬로 변경하여 공간 확보 */
-            padding: 4vh 1rem; /* ✅ 수정: vh를 사용하여 유연한 상하 패딩 */
+            justify-content: flex-start;
+            padding: 4vh 1rem;
             margin: 0;
-            overflow-x: hidden; /* 가로 스크롤 방지 */
+            overflow-x: hidden;
         }
 
         .container {
@@ -31,9 +31,8 @@
         .slider-container {
             position: relative;
             width: 100%;
-            /* ✅ 수정: 고정 픽셀(400px) 대신 뷰포트 높이(vh) 사용 */
             height: 55vh; 
-            max-height: 450px; /* 큰 화면에서도 적절한 크기 유지 */
+            max-height: 450px; 
             overflow: hidden;
             margin-top: 2rem;
             cursor: grab;
@@ -46,17 +45,22 @@
 
         .character-card {
             position: absolute;
-            /* ✅ 수정: 뷰포트 기반 크기 사용 */
             width: 65vw; 
-            height: 85%; /* 컨테이너 높이의 85% */
-            max-width: 250px; /* 원래 카드의 최대 크기 유지 */
-            max-height: 350px; /* 원래 카드의 최대 크기 유지 */
+            height: 85%; 
+            max-width: 250px; 
+            max-height: 350px; 
+            
             border-radius: 12px;
             padding: 1rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            
+            /* ⚠️ iOS 렌더링 문제 해결을 위한 수정 */
+            overflow: hidden; 
+            -webkit-mask-image: -webkit-radial-gradient(white, black); 
+            
             backdrop-filter: blur(5px);
             transition: transform 0.5s, z-index 0.5s, opacity 0.5s, filter 0.5s;
             border: 0;
@@ -72,6 +76,8 @@
             object-fit: cover;
             border: none;
             pointer-events: none;
+            /* ✅ 이미지 자체에도 클리핑 적용 */
+            overflow: hidden;
         }
         
         .back-button {
@@ -145,7 +151,6 @@
             function loadShow() {
                 let stt = 0;
                 const itemWidth = items[0].offsetWidth;
-                /* ✅ 수정: 유연해진 카드 크기에 맞춰 간격 비율을 약간 줄였습니다. */
                 const translationFactor = itemWidth * 1.05; 
 
                 items.forEach(item => {

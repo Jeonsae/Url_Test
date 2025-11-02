@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* 스크롤 방지 */
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #F7F4F4; 
+        }
+
+        #fullscreen-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 이미지를 잘리지 않게 최대 크기로 표시 */
+        }
+        
+        /* 뒤로가기 버튼 스타일은 삭제된 상태입니다. */
+    </style>
+</head>
+<body>
+    <img id="fullscreen-image" src="web.jpg" alt="결과 이미지">
+    
+</body>
+</html>

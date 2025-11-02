@@ -1,337 +1,367 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MBTI 분석 사이트</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 분석 사이트</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
-    :root {
-      --primary-color: #6a11cb;
-      --secondary-color: #2575fc;
-      --background-color: #f0f4f8;
-      --card-background: #ffffff;
-      --text-color: #333333;
-      --button-text-color: #ffffff;
-      --shadow-color: rgba(0, 0, 0, 0.1);
-    }
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --background-color: #f0f4f8;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --button-text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
 
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
-    }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-    .container {
-      width: 100%;
-      max-width: 600px;
-      background: var(--card-background);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px var(--shadow-color);
-      padding: 40px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-background);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
 
-    h1 {
-      color: var(--primary-color);
-      margin-bottom: 20px;
-      font-weight: 700;
-    }
+        /* ✅ 1. 우상단 고정 버튼 스타일 추가 */
+        #fullscreen-link-button {
+            position: fixed; /* 뷰포트에 고정 */
+            top: 20px;       /* 상단 여백 */
+            right: 20px;     /* 오른쪽 여백 */
+            width: 120px;    /* 버튼 크기 조정 */
+            height: 40px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 1000;   /* 다른 요소 위에 표시 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            text-decoration: none; /* <a> 태그 스타일링 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #fullscreen-link-button:hover {
+            transform: scale(1.05);
+        }
+        /* -------------------------------------- */
 
-    #intro-page p {
-      font-size: 1.1em;
-      line-height: 1.6;
-      margin-bottom: 30px;
-    }
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
 
-    .button {
-      background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
-      color: var(--button-text-color);
-      border: none;
-      padding: 15px 30px;
-      font-size: 1.1em;
-      font-weight: 700;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      text-decoration: none;
-      display: inline-block;
-    }
+        #intro-page p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
 
-    .button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    }
+        .button {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            color: var(--button-text-color);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            display: inline-block;
+        }
 
-    .question-card {
-      display: none;
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    
-    .question-card.active {
-      display: block;
-    }
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
 
-    .question-text {
-      font-size: 1.3em;
-      font-weight: 700;
-      margin-bottom: 30px;
-      line-height: 1.5;
-    }
+        .question-card {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .question-card.active {
+            display: block;
+        }
 
-    .options-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+        .question-text {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
 
-    .option-button {
-      background-color: var(--card-background);
-      border: 2px solid var(--secondary-color);
-      color: var(--secondary-color);
-      padding: 15px;
-      border-radius: 10px;
-      font-size: 1em;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: left;
-    }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-    .option-button:hover, .option-button.selected {
-      background: var(--secondary-color);
-      color: var(--button-text-color);
-      transform: scale(1.02);
-      box-shadow: 0 4px 10px rgba(37, 117, 252, 0.4);
-    }
+        .option-button {
+            background-color: var(--card-background);
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
 
-    .progress-bar-container {
-      width: 100%;
-      height: 8px;
-      background-color: #e0e0e0;
-      border-radius: 4px;
-      margin-top: 20px;
-    }
+        .option-button:hover, .option-button.selected {
+            background: var(--secondary-color);
+            color: var(--button-text-color);
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(37, 117, 252, 0.4);
+        }
 
-    .progress-bar {
-      height: 100%;
-      background: var(--secondary-color);
-      border-radius: 4px;
-      transition: width 0.3s ease-in-out;
-    }
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
 
-    #result-page {
-      display: none;
-      animation: fadeIn 0.5s ease-in-out;
-    }
+        .progress-bar {
+            height: 100%;
+            background: var(--secondary-color);
+            border-radius: 4px;
+            transition: width 0.3s ease-in-out;
+        }
 
-    #result-page h2 {
-      font-size: 2em;
-      color: var(--primary-color);
-      margin-bottom: 10px;
-    }
+        #result-page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
 
-    #result-page h3 {
-      font-size: 1.5em;
-      color: var(--secondary-color);
-      margin-bottom: 20px;
-    }
+        #result-page h2 {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
 
-    #result-description {
-      display: none; /* 설명 요소를 숨김 */
-    }
+        #result-page h3 {
+            font-size: 1.5em;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        #result-description {
+            display: none;
+        }
 
-    /* 모바일 반응형 */
-    @media (max-width: 768px) {
-      .container {
-        padding: 20px;
-      }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-      .button {
-        padding: 12px 25px;
-        font-size: 1em;
-      }
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
 
-      .question-text {
-        font-size: 1.1em;
-      }
+            .button {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
 
-      .option-button {
-        padding: 12px;
-        font-size: 0.9em;
-      }
+            .question-text {
+                font-size: 1.1em;
+            }
 
-      h1 {
-        font-size: 1.5em; /* 모바일 제목 크기 조정 */
-      }
-    }
-  </style>
+            .option-button {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <!-- 시작 페이지 -->
-    <div id="intro-page">
-      <h1>나의 믹스믹스 카드 캐릭터는?</h1>
-      <p>질문에 답하고 당신의 믹스믹스 카드 캐릭터를 알아보세요!</p>
-      <button class="button" onclick="startQuiz()">테스트 시작하기</button>
+    
+    <a id="fullscreen-link-button" href="image_fullscreen.html">전체 화면 이미지 보기</a>
+
+    <div class="container">
+        <div id="intro-page">
+            <h1>나의 믹스믹스 카드 캐릭터는?</h1>
+            <p>질문에 답하고 당신의 믹스믹스 카드 캐릭터를 알아보세요!</p>
+            <button class="button" onclick="startQuiz()">테스트 시작하기</button>
+        </div>
+
+        <div id="quiz-page" style="display:none;">
+            <div id="quiz-container">
+                </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <div id="result-page">
+            <h2>당신은...</h2>
+            <h3 id="mbti-type"></h3>
+            <div id="result-description"></div>
+            <button class="button" onclick="goToCharacterPage()">캐릭터 목록 보러가기</button>
+        </div>
     </div>
 
-    <!-- 퀴즈 페이지 -->
-    <div id="quiz-page" style="display:none;">
-      <div id="quiz-container">
-        <!-- 질문 카드가 여기에 동적으로 생성됩니다 -->
-      </div>
-      <div class="progress-bar-container">
-        <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
-      </div>
-    </div>
+    <script>
+        // MBTI 테스트 질문 데이터 (예/아니오 버전)
+        const questions = [
+            { question: "친구들과 파티에 가는 것보다 혼자 있는 것이 더 편하다.", options: [{ text: "예", type: "I" }, { text: "아니오", type: "E" }] },
+            { question: "눈에 보이는 현실적인 사실에 더 집중하는 편이다.", options: [{ text: "예", type: "S" }, { text: "아니오", type: "N" }] },
+            { question: "객관적인 논리나 원칙을 중요하게 생각하는 편이다.", options: [{ text: "예", type: "T" }, { text: "아니오", type: "F" }] },
+            { question: "즉흥적인 계획보다는 미리 세운 계획을 따르는 것을 좋아한다.", options: [{ text: "예", type: "J" }, { text: "아니오", type: "P" }] },
+            { question: "여러 사람과 함께 있을 때 에너지가 생긴다.", options: [{ text: "예", type: "E" }, { text: "아니오", type: "I" }] },
+            { question: "미래의 가능성을 상상하는 것을 즐긴다.", options: [{ text: "예", type: "N" }, { text: "아니오", type: "S" }] },
+            { question: "다른 사람의 감정을 먼저 살피고 공감하는 것이 중요하다.", options: [{ text: "예", type: "F" }, { text: "아니오", type: "T" }] },
+            { question: "마감 기한 직전까지 일을 미루는 경우가 많다.", options: [{ text: "예", type: "P" }, { text: "아니오", type: "J" }] },
+            { question: "새로운 사람을 만나는 것을 좋아한다.", options: [{ text: "예", type: "E" }, { text: "아니오", type: "I" }] },
+            { question: "구체적인 경험을 통해 배우는 것을 선호한다.", options: [{ text: "예", type: "S" }, { text: "아니오", type: "N" }] },
+            { question: "결정을 내릴 때, 이성적인 판단을 우선시한다.", options: [{ text: "예", type: "T" }, { text: "아니오", type: "F" }] },
+            { question: "계획 없이 자유롭게 여행하는 것을 좋아한다.", options: [{ text: "예", type: "P" }, { text: "아니오", type: "J" }] }
+        ];
 
-    <!-- 결과 페이지 -->
-    <div id="result-page">
-      <h2>당신은...</h2>
-      <h3 id="mbti-type"></h3>
-      <div id="result-description"></div>
-      <button class="button" onclick="window.location.reload()">다시 하기</button>
-    </div>
-  </div>
+        // MBTI 유형을 새로운 카테고리로 분류
+        const mbtiCategories = {
+            'ESTP': '용맹',
+            'ESFP': '용맹',
+            'ESTJ': '흉폭',
+            'ISTP': '흉폭',
+            'ENTJ': '흉폭',
+            'INTP': '교활',
+            'INFP': '교활',
+            'ISFP': '교활',
+            'ENFJ': '포용',
+            'ESFJ': '포용',
+            'ENTP': '고귀',
+            'ENFP': '고귀',
+            'ISTJ': '인내',
+            'ISFJ': '인내',
+            'INTJ': '인내',
+            'INFJ': '인내'
+        };
 
-  <script>
-    // MBTI 테스트 질문 데이터 (예/아니오 버전)
-    const questions = [
-      { question: "친구들과 파티에 가는 것보다 혼자 있는 것이 더 편하다.", options: [{ text: "예", type: "I" }, { text: "아니오", type: "E" }] },
-      { question: "눈에 보이는 현실적인 사실에 더 집중하는 편이다.", options: [{ text: "예", type: "S" }, { text: "아니오", type: "N" }] },
-      { question: "객관적인 논리나 원칙을 중요하게 생각하는 편이다.", options: [{ text: "예", type: "T" }, { text: "아니오", type: "F" }] },
-      { question: "즉흥적인 계획보다는 미리 세운 계획을 따르는 것을 좋아한다.", options: [{ text: "예", type: "J" }, { text: "아니오", type: "P" }] },
-      { question: "여러 사람과 함께 있을 때 에너지가 생긴다.", options: [{ text: "예", type: "E" }, { text: "아니오", type: "I" }] },
-      { question: "미래의 가능성을 상상하는 것을 즐긴다.", options: [{ text: "예", type: "N" }, { text: "아니오", type: "S" }] },
-      { question: "다른 사람의 감정을 먼저 살피고 공감하는 것이 중요하다.", options: [{ text: "예", type: "F" }, { text: "아니오", type: "T" }] },
-      { question: "마감 기한 직전까지 일을 미루는 경우가 많다.", options: [{ text: "예", type: "P" }, { text: "아니오", type: "J" }] },
-      { question: "새로운 사람을 만나는 것을 좋아한다.", options: [{ text: "예", type: "E" }, { text: "아니오", type: "I" }] },
-      { question: "구체적인 경험을 통해 배우는 것을 선호한다.", options: [{ text: "예", type: "S" }, { text: "아니오", type: "N" }] },
-      { question: "결정을 내릴 때, 이성적인 판단을 우선시한다.", options: [{ text: "예", type: "T" }, { text: "아니오", type: "F" }] },
-      { question: "계획 없이 자유롭게 여행하는 것을 좋아한다.", options: [{ text: "예", type: "P" }, { text: "아니오", type: "J" }] }
-    ];
+        const introPage = document.getElementById('intro-page');
+        const quizPage = document.getElementById('quiz-page');
+        const resultPage = document.getElementById('result-page');
+        const quizContainer = document.getElementById('quiz-container');
+        const progressBar = document.getElementById('progress-bar');
+        const mbtiTypeEl = document.getElementById('mbti-type');
 
-    // MBTI 유형을 새로운 카테고리로 분류
-    const mbtiCategories = {
-      'ESTP': '용맹',
-      'ESFP': '용맹',
-      'ESTJ': '흉폭',
-      'ISTP': '흉폭',
-      'ENTJ': '흉폭',
-      'INTP': '교활',
-      'INFP': '교활',
-      'ISFP': '교활',
-      'ENFJ': '포용',
-      'ESFJ': '포용',
-      'ENTP': '고귀',
-      'ENFP': '고귀',
-      'ISTJ': '인내',
-      'ISFJ': '인내',
-      'INTJ': '인내',
-      'INFJ': '인내'
-    };
+        let currentQuestionIndex = 0;
+        let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
 
-    const introPage = document.getElementById('intro-page');
-    const quizPage = document.getElementById('quiz-page');
-    const resultPage = document.getElementById('result-page');
-    const quizContainer = document.getElementById('quiz-container');
-    const progressBar = document.getElementById('progress-bar');
-    const mbtiTypeEl = document.getElementById('mbti-type');
-    // resultDescEl은 더 이상 사용하지 않으므로 주석 처리
-    // const resultDescEl = document.getElementById('result-description');
+        function startQuiz() {
+            introPage.style.display = 'none';
+            quizPage.style.display = 'block';
+            loadQuestion();
+        }
 
-    let currentQuestionIndex = 0;
-    let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        function loadQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const questionData = questions[currentQuestionIndex];
+                quizContainer.innerHTML = ''; 
+                
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card active';
 
-    function startQuiz() {
-      introPage.style.display = 'none';
-      quizPage.style.display = 'block';
-      loadQuestion();
-    }
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = questionData.question;
+                questionCard.appendChild(questionText);
 
-    function loadQuestion() {
-      if (currentQuestionIndex < questions.length) {
-        const questionData = questions[currentQuestionIndex];
-        quizContainer.innerHTML = ''; // 이전 질문 카드 제거
-        
-        const questionCard = document.createElement('div');
-        questionCard.className = 'question-card active';
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
 
-        const questionText = document.createElement('div');
-        questionText.className = 'question-text';
-        questionText.textContent = questionData.question;
-        questionCard.appendChild(questionText);
+                questionData.options.forEach(option => {
+                    const optionButton = document.createElement('button');
+                    optionButton.className = 'option-button';
+                    optionButton.textContent = option.text;
+                    optionButton.onclick = () => handleAnswer(option.type);
+                    optionsContainer.appendChild(optionButton);
+                });
+                
+                questionCard.appendChild(optionsContainer);
+                quizContainer.appendChild(questionCard);
+                updateProgressBar();
+            } else {
+                showResult();
+            }
+        }
 
-        const optionsContainer = document.createElement('div');
-        optionsContainer.className = 'options-container';
+        function handleAnswer(type) {
+            scores[type]++;
+            currentQuestionIndex++;
+            loadQuestion();
+        }
 
-        questionData.options.forEach(option => {
-          const optionButton = document.createElement('button');
-          optionButton.className = 'option-button';
-          optionButton.textContent = option.text;
-          optionButton.onclick = () => handleAnswer(option.type);
-          optionsContainer.appendChild(optionButton);
-        });
-        
-        questionCard.appendChild(optionsContainer);
-        quizContainer.appendChild(questionCard);
-        updateProgressBar();
-      } else {
-        showResult();
-      }
-    }
+        function updateProgressBar() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
 
-    function handleAnswer(type) {
-      scores[type]++;
-      currentQuestionIndex++;
-      loadQuestion();
-    }
+        function determineMbtiType() {
+            let mbti = "";
+            mbti += scores.E > scores.I ? "E" : "I";
+            mbti += scores.S > scores.N ? "S" : "N";
+            mbti += scores.T > scores.F ? "T" : "F";
+            mbti += scores.J > scores.P ? "J" : "P";
+            return mbti;
+        }
 
-    function updateProgressBar() {
-      const progress = (currentQuestionIndex / questions.length) * 100;
-      progressBar.style.width = progress + '%';
-    }
+        function showResult() {
+            quizPage.style.display = 'none';
+            resultPage.style.display = 'block';
 
-    function showResult() {
-      quizPage.style.display = 'none';
-      resultPage.style.display = 'block';
+            const mbti = determineMbtiType();
+            const category = mbtiCategories[mbti] || '알 수 없음';
+            
+            mbtiTypeEl.textContent = `${category} 유형입니다.`;
 
-      const mbti = determineMbtiType();
-      const category = mbtiCategories[mbti] || '알 수 없음';
-      
-      mbtiTypeEl.textContent = `${category} 유형입니다.`;
+            const resultButton = resultPage.querySelector('button');
+            // ✅ 기존 기능 유지: 버튼 텍스트와 onclick 함수를 'characters.html'로 연결
+            resultButton.textContent = `${category} 유형의 캐릭터 보러가기`;
+            resultButton.onclick = goToCharacterPage; 
+        }
 
-      // '다시 하기' 버튼을 'OO 유형의 캐릭터 보러가기'로 변경
-      const restartButton = resultPage.querySelector('button');
-      restartButton.textContent = `${category} 유형의 캐릭터 보러가기`;
-      restartButton.onclick = () => {
-       window.location.href = `characters.html?type=${encodeURIComponent(category)}`;
-      };
-    }
+        function goToCharacterPage() {
+             const mbti = determineMbtiType();
+             const category = mbtiCategories[mbti] || '알 수 없음';
+             // ✅ 기존 기능 유지: 'characters.html'로 이동
+             window.location.href = `characters.html?type=${encodeURIComponent(category)}`; 
+        }
 
-    function determineMbtiType() {
-      let mbti = "";
-      mbti += scores.E > scores.I ? "E" : "I";
-      mbti += scores.S > scores.N ? "S" : "N";
-      mbti += scores.T > scores.F ? "T" : "F";
-      mbti += scores.J > scores.P ? "J" : "P";
-      return mbti;
-    }
-  </script>
+    </script>
 </body>
 </html>
