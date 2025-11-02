@@ -19,6 +19,8 @@
             padding: 4vh 1rem;
             margin: 0;
             overflow-x: hidden;
+            /* 💡 수정: 세로 스크롤 완전히 비활성화 */
+            overflow-y: hidden; 
         }
 
         .container {
@@ -45,14 +47,13 @@
 
         .character-card {
             position: absolute;
-            width: 65vw; 
-            height: 80%; /* 수직 여백 확보 */
+            /* 💡 수정: 카드의 너비를 줄여 옆 카드를 뷰포트 밖으로 밀어낼 공간 확보 */
+            width: 60vw; 
+            height: 85%; /* 높이 비율을 살짝 늘려 안정성 확보 */
             max-width: 250px; 
             max-height: 380px; 
             
-            /* ❌ PNG 이미지에 둥근 모서리가 있으므로 제거 */
             border-radius: 0; 
-            /* ❌ 이미지가 카드 전체를 덮도록 패딩 제거 */
             padding: 0; 
             
             display: flex;
@@ -60,7 +61,6 @@
             align-items: center;
             justify-content: center;
             
-            /* 💡 iOS 렌더링 문제 해결 및 블러 효과는 유지 */
             overflow: hidden; 
             -webkit-mask-image: -webkit-radial-gradient(white, black); 
             
@@ -75,10 +75,8 @@
         .character-img {
             width: 100%;
             height: 100%;
-            /* ❌ PNG 이미지에 둥근 모서리가 있으므로 제거 */
             border-radius: 0; 
-            /* 💡 이미지가 카드를 꽉 채우도록 설정 */
-            object-fit: contain; /* 또는 fill */
+            object-fit: contain; 
             border: none;
             pointer-events: none;
             overflow: hidden;
@@ -93,7 +91,8 @@
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.2s, color 0.2s;
-            margin-top: 2rem;
+            /* 💡 수정: margin-top을 줄여 버튼을 위로 올림 */
+            margin-top: 1.5rem; 
         }
 
         .back-button:hover {
@@ -155,7 +154,8 @@
             function loadShow() {
                 let stt = 0;
                 const itemWidth = items[0].offsetWidth;
-                const translationFactor = itemWidth * 1.05; 
+                // 💡 수정: 카드를 더 멀리 밀어내 뷰포트 밖으로 완전히 나가도록 함
+                const translationFactor = itemWidth * 1.5; 
 
                 items.forEach(item => {
                     item.style.transform = 'none';
@@ -174,7 +174,8 @@
                     items[i].style.transform = `translate(-50%, -50%) translateX(${translationFactor * stt}px) scale(${1 - 0.2 * stt}) perspective(16px) rotateY(-1deg)`;
                     items[i].style.zIndex = -stt;
                     items[i].style.filter = 'blur(5px)';
-                    items[i].style.opacity = stt > 2 ? 0 : 0.6;
+                    // 💡 수정: 활성 카드를 제외한 모든 옆 카드는 완전히 숨김
+                    items[i].style.opacity = 0; 
                 }
 
                 stt = 0;
@@ -183,7 +184,8 @@
                     items[i].style.transform = `translate(-50%, -50%) translateX(${-translationFactor * stt}px) scale(${1 - 0.2 * stt}) perspective(16px) rotateY(1deg)`;
                     items[i].style.zIndex = -stt;
                     items[i].style.filter = 'blur(5px)';
-                    items[i].style.opacity = stt > 2 ? 0 : 0.6;
+                    // 💡 수정: 활성 카드를 제외한 모든 옆 카드는 완전히 숨김
+                    items[i].style.opacity = 0;
                 }
             }
 
